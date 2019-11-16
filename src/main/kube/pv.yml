@@ -1,7 +1,8 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: testunited-mysql-pv-volume
+  namespace: testunited
+  name: mysql-pv-volume
   labels:
     type: local
 spec:
@@ -12,15 +13,3 @@ spec:
     - ReadWriteOnce
   hostPath:
     path: "/mnt/data/testunited/mysql"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: testunited-mysql-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi

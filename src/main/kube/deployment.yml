@@ -1,17 +1,18 @@
 apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
 kind: Deployment
 metadata:
-  name: testunited-mysql
+  namespace: testunited
+  name: mysql
 spec:
   selector:
     matchLabels:
-      app: testunited-mysql
+      app: mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
-        app: testunited-mysql
+        app: mysql
     spec:
       containers:
       - image: mysql:5.6
@@ -24,15 +25,17 @@ spec:
         - containerPort: 3306
           name: mysql
         volumeMounts:
-        - name: testunited-mysql-pv
+        - name: mysql-pv
           mountPath: /var/lib/mysql
-        - name: testunited-mysql-init
+        - name: mysql-init
           mountPath: /docker-entrypoint-initdb.d
       volumes:
-      - name: testunited-mysql-pv
+      - name: mysql-pv
         persistentVolumeClaim:
-          claimName: testunited-mysql-pv-claim
-      - name: testunited-mysql-init
-        hostPath:
-          path: /mnt/data/testunited/mysql-init
-          type: Directory
+          claimName: mysql-pv-claim
+      - name: mysql-init
+        configMap:
+          name: mysql-init-data
+          items:
+          - key: mysql-init-data.sql
+            path: mysql-init-data.sql
